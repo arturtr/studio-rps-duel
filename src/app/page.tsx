@@ -4,7 +4,7 @@ import type { NextPage } from 'next';
 import { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { HandMetal, Hand, HandScissors, RotateCcw, ThumbsUp, ThumbsDown, Scale } from 'lucide-react';
+import { HandMetal, Hand, Scissors, RotateCcw, ThumbsUp, ThumbsDown, Scale } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 type Choice = 'rock' | 'paper' | 'scissors';
@@ -16,7 +16,7 @@ const getIconForButton = (choice: Choice) => {
   const iconProps = { className: "w-10 h-10 md:w-12 md:h-12 text-primary group-hover:text-accent-foreground transition-colors duration-200" };
   if (choice === 'rock') return <HandMetal {...iconProps} />;
   if (choice === 'paper') return <Hand {...iconProps} />;
-  if (choice === 'scissors') return <HandScissors {...iconProps} />;
+  if (choice === 'scissors') return <Scissors {...iconProps} />;
   return null;
 };
 
@@ -24,7 +24,7 @@ const getDisplayIcon = (choice: Choice | null) => {
   const iconProps = { className: "w-16 h-16 md:w-20 md:h-20 text-secondary-foreground" };
   if (choice === 'rock') return <HandMetal {...iconProps} />;
   if (choice === 'paper') return <Hand {...iconProps} />;
-  if (choice === 'scissors') return <HandScissors {...iconProps} />;
+  if (choice === 'scissors') return <Scissors {...iconProps} />;
   return <div className="w-16 h-16 md:w-20 md:h-20 bg-muted rounded-lg flex items-center justify-center text-muted-foreground text-4xl shadow-inner">?</div>;
 };
 

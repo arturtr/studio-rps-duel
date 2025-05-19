@@ -4,7 +4,7 @@
 import type { NextPage } from 'next';
 import { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'; // Added CardHeader, removed CardFooter
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { RotateCcw, ThumbsUp, ThumbsDown, Scale } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -12,6 +12,11 @@ type Choice = 'rock' | 'paper' | 'scissors';
 type OutcomeMessage = 'You Win!' | 'Computer Wins!' | "It's a Tie!" | null;
 
 const choices: Choice[] = ['rock', 'paper', 'scissors'];
+const hotkeyMap: Record<Choice, string> = {
+  rock: 'R or 1',
+  paper: 'P or 2',
+  scissors: 'S or 3',
+};
 
 const getEmojiForChoice = (choice: Choice | null): string => {
   if (choice === 'rock') return '🪨';
@@ -47,7 +52,6 @@ const RpsPage: NextPage = () => {
       if (storedTies) setTies(parseInt(storedTies, 10));
     } catch (error) {
       console.error("Error reading from localStorage:", error);
-      // Initialize scores to 0 if localStorage access fails or values are not found
       setUserScore(0);
       setComputerScore(0);
       setTies(0);
@@ -149,32 +153,33 @@ const RpsPage: NextPage = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4 sm:p-6 md:p-8 text-foreground">
       <Card className="w-full max-w-2xl shadow-xl rounded-xl overflow-hidden">
-        <CardHeader className="p-6 sm:p-8 space-y-4 border-b">
-          <div className="flex justify-between items-center">
-            <div>
-              <CardTitle className="text-3xl sm:text-4xl font-bold text-primary">RPS Duel</CardTitle>
-              <CardDescription className="text-md sm:text-lg text-muted-foreground mt-1">Choose your weapon wisely!</CardDescription>
+        <CardHeader className="p-6 sm:p-8 border-b">
+          <div className="flex justify-between items-start">
+            <div className="flex-grow">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                <CardTitle className="text-3xl sm:text-4xl font-bold text-primary">RPS Duel</CardTitle>
+                <div className="flex items-center gap-3 sm:gap-4 mt-2 sm:mt-0">
+                  <div className="text-center">
+                    <p className="text-xs font-medium text-muted-foreground uppercase">You</p>
+                    <p className="text-xl font-bold text-foreground">{userScore}</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-xs font-medium text-muted-foreground uppercase">CPU</p>
+                    <p className="text-xl font-bold text-foreground">{computerScore}</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-xs font-medium text-muted-foreground uppercase">Ties</p>
+                    <p className="text-xl font-bold text-foreground">{ties}</p>
+                  </div>
+                </div>
+              </div>
+              <CardDescription className="text-md sm:text-lg text-muted-foreground mt-1">
+                Choose your weapon wisely!
+              </CardDescription>
             </div>
-            <Button onClick={resetScores} variant="destructive" size="icon" aria-label="Reset All Scores" className="shadow-md hover:shadow-lg transition-shadow">
+            <Button onClick={resetScores} variant="destructive" size="icon" aria-label="Reset All Scores" className="shadow-md hover:shadow-lg transition-shadow ml-4 flex-shrink-0">
               <RotateCcw className="h-5 w-5" />
             </Button>
-          </div>
-          
-          <div className="w-full text-center pt-4">
-             <div className="grid grid-cols-3 gap-2 sm:gap-3 text-sm sm:text-md">
-                <div className="p-2 bg-muted/70 rounded-lg shadow-sm">
-                    <p className="font-medium text-muted-foreground">You</p>
-                    <p className="text-xl sm:text-2xl font-bold text-foreground">{userScore}</p>
-                </div>
-                <div className="p-2 bg-muted/70 rounded-lg shadow-sm">
-                    <p className="font-medium text-muted-foreground">Computer</p>
-                    <p className="text-xl sm:text-2xl font-bold text-foreground">{computerScore}</p>
-                </div>
-                <div className="p-2 bg-muted/70 rounded-lg shadow-sm">
-                    <p className="font-medium text-muted-foreground">Ties</p>
-                    <p className="text-xl sm:text-2xl font-bold text-foreground">{ties}</p>
-                </div>
-             </div>
           </div>
         </CardHeader>
         <CardContent className="p-6 sm:p-8 space-y-8">
@@ -184,53 +189,61 @@ const RpsPage: NextPage = () => {
                 key={choice}
                 onClick={() => handleUserChoice(choice)}
                 variant="outline"
-                className="h-28 sm:h-32 md:h-36 text-sm sm:text-md capitalize transition-all duration-200 ease-in-out transform hover:scale-105 focus:ring-2 focus:ring-accent shadow-md hover:shadow-lg focus:shadow-lg flex flex-col items-center justify-center p-2 group border-2 hover:border-accent hover:bg-accent"
+                className="h-auto py-4 sm:py-6 text-sm sm:text-md capitalize transition-all duration-200 ease-in-out transform hover:scale-105 focus:ring-2 focus:ring-accent shadow-md hover:shadow-lg focus:shadow-lg flex flex-col items-center justify-center p-2 group border-2 hover:border-accent hover:bg-accent"
                 aria-label={`Choose ${choice}`}
               >
                 <span className="text-4xl md:text-5xl text-primary group-hover:text-accent-foreground transition-colors duration-200" role="img" aria-label={choice}>
                   {getEmojiForChoice(choice)}
                 </span>
                 <span className="mt-2 font-medium text-foreground group-hover:text-accent-foreground transition-colors duration-200">{choice}</span>
+                <small className="mt-1 text-xs text-muted-foreground group-hover:text-accent-foreground transition-colors duration-200">
+                  ({hotkeyMap[choice]})
+                </small>
               </Button>
             ))}
           </div>
 
-          {(userChoice || computerChoice || outcome) && (
-            <div className="space-y-6 text-center pt-6 border-t">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 items-start">
-                <div className="flex flex-col items-center space-y-2 p-4 border rounded-lg shadow-sm bg-secondary/50">
-                  <h3 className="text-lg sm:text-xl font-semibold text-secondary-foreground">Your Choice</h3>
-                  <span className="text-5xl md:text-6xl text-secondary-foreground" role="img" aria-label={userChoice || undefined}>
-                    {getEmojiForChoice(userChoice)}
-                  </span>
-                  <p className="text-md sm:text-lg capitalize text-secondary-foreground font-medium">{userChoice || 'Waiting...'}</p>
+          <div className="pt-6 border-t">
+            {userChoice || computerChoice || outcome ? (
+              <div className="space-y-6 text-center">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 items-start">
+                  <div className="flex flex-col items-center space-y-2 p-4 border rounded-lg shadow-sm bg-secondary/50">
+                    <h3 className="text-lg sm:text-xl font-semibold text-secondary-foreground">Your Choice</h3>
+                    <span className="text-5xl md:text-6xl text-secondary-foreground" role="img" aria-label={userChoice || undefined}>
+                      {getEmojiForChoice(userChoice)}
+                    </span>
+                    <p className="text-md sm:text-lg capitalize text-secondary-foreground font-medium">{userChoice || 'Waiting...'}</p>
+                  </div>
+                  <div className="flex flex-col items-center space-y-2 p-4 border rounded-lg shadow-sm bg-secondary/50">
+                    <h3 className="text-lg sm:text-xl font-semibold text-secondary-foreground">Computer's Choice</h3>
+                    <span className="text-5xl md:text-6xl text-secondary-foreground" role="img" aria-label={computerChoice || undefined}>
+                      {getEmojiForChoice(computerChoice)}
+                    </span>
+                    <p className="text-md sm:text-lg capitalize text-secondary-foreground font-medium">{computerChoice || 'Waiting...'}</p>
+                  </div>
                 </div>
-                <div className="flex flex-col items-center space-y-2 p-4 border rounded-lg shadow-sm bg-secondary/50">
-                  <h3 className="text-lg sm:text-xl font-semibold text-secondary-foreground">Computer's Choice</h3>
-                   <span className="text-5xl md:text-6xl text-secondary-foreground" role="img" aria-label={computerChoice || undefined}>
-                    {getEmojiForChoice(computerChoice)}
-                  </span>
-                  <p className="text-md sm:text-lg capitalize text-secondary-foreground font-medium">{computerChoice || 'Waiting...'}</p>
-                </div>
+                {outcome && (
+                  <div className={cn(
+                    "mt-4 p-4 sm:p-5 rounded-lg shadow-md text-center flex items-center justify-center",
+                    outcome === 'You Win!' && "bg-accent text-accent-foreground",
+                    outcome === 'Computer Wins!' && "bg-destructive text-destructive-foreground",
+                    outcome === "It's a Tie!" && "bg-muted text-muted-foreground"
+                  )}>
+                    {getOutcomeIcon(outcome)}
+                    <h2 className="text-xl sm:text-2xl md:text-3xl font-bold">{outcome}</h2>
+                  </div>
+                )}
               </div>
-              {outcome && (
-                <div className={cn(
-                  "mt-4 p-4 sm:p-5 rounded-lg shadow-md text-center flex items-center justify-center",
-                  outcome === 'You Win!' && "bg-accent text-accent-foreground",
-                  outcome === 'Computer Wins!' && "bg-destructive text-destructive-foreground",
-                  outcome === "It's a Tie!" && "bg-muted text-muted-foreground"
-                )}>
-                  {getOutcomeIcon(outcome)}
-                  <h2 className="text-xl sm:text-2xl md:text-3xl font-bold">{outcome}</h2>
-                </div>
-              )}
-            </div>
-          )}
+            ) : (
+              <div className="text-center py-6">
+                <Scale className="w-10 h-10 mx-auto text-muted-foreground mb-3" />
+                <p className="text-lg font-medium text-foreground">Let the duel begin!</p>
+                <p className="text-sm text-muted-foreground">Choose your weapon to see the outcome.</p>
+              </div>
+            )}
+          </div>
         </CardContent>
       </Card>
-       <p className="mt-8 text-center text-sm text-muted-foreground">
-        Tip: Use keyboard shortcuts! Press <kbd className="px-2 py-1.5 text-xs font-semibold text-gray-700 bg-gray-100 border border-gray-300 rounded-md dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">R</kbd> or <kbd className="px-2 py-1.5 text-xs font-semibold text-gray-700 bg-gray-100 border border-gray-300 rounded-md dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">1</kbd> for Rock, <kbd className="px-2 py-1.5 text-xs font-semibold text-gray-700 bg-gray-100 border border-gray-300 rounded-md dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">P</kbd> or <kbd className="px-2 py-1.5 text-xs font-semibold text-gray-700 bg-gray-100 border border-gray-300 rounded-md dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">2</kbd> for Paper, or <kbd className="px-2 py-1.5 text-xs font-semibold text-gray-700 bg-gray-100 border border-gray-300 rounded-md dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">S</kbd> or <kbd className="px-2 py-1.5 text-xs font-semibold text-gray-700 bg-gray-100 border border-gray-300 rounded-md dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">3</kbd> for Scissors.
-      </p>
     </div>
   );
 };

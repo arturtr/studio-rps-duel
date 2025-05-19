@@ -1,10 +1,11 @@
+
 "use client";
 
 import type { NextPage } from 'next';
 import { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { HandMetal, Hand, Scissors, RotateCcw, ThumbsUp, ThumbsDown, Scale } from 'lucide-react';
+import { RotateCcw, ThumbsUp, ThumbsDown, Scale } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 type Choice = 'rock' | 'paper' | 'scissors';
@@ -12,20 +13,11 @@ type OutcomeMessage = 'You Win!' | 'Computer Wins!' | "It's a Tie!" | null;
 
 const choices: Choice[] = ['rock', 'paper', 'scissors'];
 
-const getIconForButton = (choice: Choice) => {
-  const iconProps = { className: "w-10 h-10 md:w-12 md:h-12 text-primary group-hover:text-accent-foreground transition-colors duration-200" };
-  if (choice === 'rock') return <HandMetal {...iconProps} />;
-  if (choice === 'paper') return <Hand {...iconProps} />;
-  if (choice === 'scissors') return <Scissors {...iconProps} />;
-  return null;
-};
-
-const getDisplayIcon = (choice: Choice | null) => {
-  const iconProps = { className: "w-16 h-16 md:w-20 md:h-20 text-secondary-foreground" };
-  if (choice === 'rock') return <HandMetal {...iconProps} />;
-  if (choice === 'paper') return <Hand {...iconProps} />;
-  if (choice === 'scissors') return <Scissors {...iconProps} />;
-  return <div className="w-16 h-16 md:w-20 md:h-20 bg-muted rounded-lg flex items-center justify-center text-muted-foreground text-4xl shadow-inner">?</div>;
+const getEmojiForChoice = (choice: Choice | null): string => {
+  if (choice === 'rock') return '🪨';
+  if (choice === 'paper') return '🧻';
+  if (choice === 'scissors') return '✂️';
+  return '?';
 };
 
 const getOutcomeIcon = (outcome: OutcomeMessage) => {
@@ -170,7 +162,9 @@ const RpsPage: NextPage = () => {
                 className="h-28 sm:h-32 md:h-36 text-sm sm:text-md capitalize transition-all duration-200 ease-in-out transform hover:scale-105 focus:ring-2 focus:ring-accent shadow-md hover:shadow-lg focus:shadow-lg flex flex-col items-center justify-center p-2 group border-2 hover:border-accent hover:bg-accent"
                 aria-label={`Choose ${choice}`}
               >
-                {getIconForButton(choice)}
+                <span className="text-4xl md:text-5xl text-primary group-hover:text-accent-foreground transition-colors duration-200" role="img" aria-label={choice}>
+                  {getEmojiForChoice(choice)}
+                </span>
                 <span className="mt-2 font-medium text-foreground group-hover:text-accent-foreground transition-colors duration-200">{choice}</span>
               </Button>
             ))}
@@ -181,12 +175,16 @@ const RpsPage: NextPage = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 items-start">
                 <div className="flex flex-col items-center space-y-2 p-4 border rounded-lg shadow-sm bg-secondary/50">
                   <h3 className="text-lg sm:text-xl font-semibold text-secondary-foreground">Your Choice</h3>
-                  {getDisplayIcon(userChoice)}
+                  <span className="text-5xl md:text-6xl text-secondary-foreground" role="img" aria-label={userChoice || undefined}>
+                    {getEmojiForChoice(userChoice)}
+                  </span>
                   <p className="text-md sm:text-lg capitalize text-secondary-foreground font-medium">{userChoice || 'Waiting...'}</p>
                 </div>
                 <div className="flex flex-col items-center space-y-2 p-4 border rounded-lg shadow-sm bg-secondary/50">
                   <h3 className="text-lg sm:text-xl font-semibold text-secondary-foreground">Computer's Choice</h3>
-                  {getDisplayIcon(computerChoice)}
+                   <span className="text-5xl md:text-6xl text-secondary-foreground" role="img" aria-label={computerChoice || undefined}>
+                    {getEmojiForChoice(computerChoice)}
+                  </span>
                   <p className="text-md sm:text-lg capitalize text-secondary-foreground font-medium">{computerChoice || 'Waiting...'}</p>
                 </div>
               </div>
@@ -235,3 +233,5 @@ const RpsPage: NextPage = () => {
 };
 
 export default RpsPage;
+
+    

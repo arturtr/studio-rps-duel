@@ -4,7 +4,7 @@
 import type { NextPage } from 'next';
 import { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardTitle } from '@/components/ui/card'; // Removed CardHeader
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'; // Added CardHeader, removed CardFooter
 import { RotateCcw, ThumbsUp, ThumbsDown, Scale } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -47,6 +47,7 @@ const RpsPage: NextPage = () => {
       if (storedTies) setTies(parseInt(storedTies, 10));
     } catch (error) {
       console.error("Error reading from localStorage:", error);
+      // Initialize scores to 0 if localStorage access fails or values are not found
       setUserScore(0);
       setComputerScore(0);
       setTies(0);
@@ -148,8 +149,35 @@ const RpsPage: NextPage = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4 sm:p-6 md:p-8 text-foreground">
       <Card className="w-full max-w-2xl shadow-xl rounded-xl overflow-hidden">
-        {/* CardHeader removed */}
-        <CardContent className="p-6 sm:p-8 space-y-8 pt-8"> {/* Added pt-8 to compensate for removed CardHeader padding */}
+        <CardHeader className="p-6 sm:p-8 space-y-4 border-b">
+          <div className="flex justify-between items-center">
+            <div>
+              <CardTitle className="text-3xl sm:text-4xl font-bold text-primary">RPS Duel</CardTitle>
+              <CardDescription className="text-md sm:text-lg text-muted-foreground mt-1">Choose your weapon wisely!</CardDescription>
+            </div>
+            <Button onClick={resetScores} variant="destructive" size="icon" aria-label="Reset All Scores" className="shadow-md hover:shadow-lg transition-shadow">
+              <RotateCcw className="h-5 w-5" />
+            </Button>
+          </div>
+          
+          <div className="w-full text-center pt-4">
+             <div className="grid grid-cols-3 gap-2 sm:gap-3 text-sm sm:text-md">
+                <div className="p-2 bg-muted/70 rounded-lg shadow-sm">
+                    <p className="font-medium text-muted-foreground">You</p>
+                    <p className="text-xl sm:text-2xl font-bold text-foreground">{userScore}</p>
+                </div>
+                <div className="p-2 bg-muted/70 rounded-lg shadow-sm">
+                    <p className="font-medium text-muted-foreground">Computer</p>
+                    <p className="text-xl sm:text-2xl font-bold text-foreground">{computerScore}</p>
+                </div>
+                <div className="p-2 bg-muted/70 rounded-lg shadow-sm">
+                    <p className="font-medium text-muted-foreground">Ties</p>
+                    <p className="text-xl sm:text-2xl font-bold text-foreground">{ties}</p>
+                </div>
+             </div>
+          </div>
+        </CardHeader>
+        <CardContent className="p-6 sm:p-8 space-y-8">
           <div className="grid grid-cols-3 gap-3 sm:gap-4">
             {choices.map((choice) => (
               <Button
@@ -199,33 +227,6 @@ const RpsPage: NextPage = () => {
             </div>
           )}
         </CardContent>
-        <CardFooter className="flex flex-col space-y-6 p-6 sm:p-8 bg-card-foreground/5 border-t">
-          <div className="text-center"> {/* Container for title and description */}
-            <CardTitle className="text-3xl sm:text-4xl font-bold text-primary">RPS Duel</CardTitle>
-            <CardDescription className="text-md sm:text-lg text-muted-foreground mt-1">Choose your weapon wisely!</CardDescription>
-          </div>
-          
-          <div className="w-full text-center">
-             <h3 className="text-xl sm:text-2xl font-semibold mb-3 text-primary">Scoreboard</h3>
-             <div className="grid grid-cols-3 gap-2 sm:gap-3 text-sm sm:text-md">
-                <div className="p-3 sm:p-4 bg-muted/70 rounded-lg shadow-sm">
-                    <p className="font-medium text-muted-foreground">You</p>
-                    <p className="text-xl sm:text-2xl font-bold text-foreground">{userScore}</p>
-                </div>
-                <div className="p-3 sm:p-4 bg-muted/70 rounded-lg shadow-sm">
-                    <p className="font-medium text-muted-foreground">Computer</p>
-                    <p className="text-xl sm:text-2xl font-bold text-foreground">{computerScore}</p>
-                </div>
-                <div className="p-3 sm:p-4 bg-muted/70 rounded-lg shadow-sm">
-                    <p className="font-medium text-muted-foreground">Ties</p>
-                    <p className="text-xl sm:text-2xl font-bold text-foreground">{ties}</p>
-                </div>
-             </div>
-          </div>
-          <Button onClick={resetScores} variant="destructive" size="lg" className="w-full max-w-xs self-center mt-4 shadow-md hover:shadow-lg transition-shadow">
-            <RotateCcw className="mr-2 h-5 w-5" /> Reset All Scores
-          </Button>
-        </CardFooter>
       </Card>
        <p className="mt-8 text-center text-sm text-muted-foreground">
         Tip: Use keyboard shortcuts! Press <kbd className="px-2 py-1.5 text-xs font-semibold text-gray-700 bg-gray-100 border border-gray-300 rounded-md dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">R</kbd> or <kbd className="px-2 py-1.5 text-xs font-semibold text-gray-700 bg-gray-100 border border-gray-300 rounded-md dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">1</kbd> for Rock, <kbd className="px-2 py-1.5 text-xs font-semibold text-gray-700 bg-gray-100 border border-gray-300 rounded-md dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">P</kbd> or <kbd className="px-2 py-1.5 text-xs font-semibold text-gray-700 bg-gray-100 border border-gray-300 rounded-md dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">2</kbd> for Paper, or <kbd className="px-2 py-1.5 text-xs font-semibold text-gray-700 bg-gray-100 border border-gray-300 rounded-md dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">S</kbd> or <kbd className="px-2 py-1.5 text-xs font-semibold text-gray-700 bg-gray-100 border border-gray-300 rounded-md dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">3</kbd> for Scissors.
@@ -235,5 +236,3 @@ const RpsPage: NextPage = () => {
 };
 
 export default RpsPage;
-
-    

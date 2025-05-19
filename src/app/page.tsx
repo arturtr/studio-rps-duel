@@ -4,7 +4,7 @@
 import type { NextPage } from 'next';
 import { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { RotateCcw, ThumbsUp, ThumbsDown, Scale } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -12,10 +12,10 @@ type Choice = 'rock' | 'paper' | 'scissors';
 type OutcomeMessage = 'You Win!' | 'Computer Wins!' | "It's a Tie!" | null;
 
 const choices: Choice[] = ['rock', 'paper', 'scissors'];
-const hotkeyMap: Record<Choice, string> = {
-  rock: 'R or 1',
-  paper: 'P or 2',
-  scissors: 'S or 3',
+const hotkeyMap: Record<Choice, string[]> = {
+  rock: ['R', '1'],
+  paper: ['P', '2'],
+  scissors: ['S', '3'],
 };
 
 const getEmojiForChoice = (choice: Choice | null): string => {
@@ -196,9 +196,13 @@ const RpsPage: NextPage = () => {
                   {getEmojiForChoice(choice)}
                 </span>
                 <span className="mt-2 font-medium text-foreground group-hover:text-accent-foreground transition-colors duration-200">{choice}</span>
-                <small className="mt-1 text-xs text-muted-foreground group-hover:text-accent-foreground transition-colors duration-200">
-                  ({hotkeyMap[choice]})
-                </small>
+                <div className="mt-1.5 flex space-x-1">
+                  {hotkeyMap[choice].map((key) => (
+                    <kbd key={key} className="px-2 py-1 text-xs font-semibold text-muted-foreground group-hover:text-accent-foreground bg-muted group-hover:bg-primary/20 border border-input rounded-md shadow-sm transition-colors duration-200">
+                      {key}
+                    </kbd>
+                  ))}
+                </div>
               </Button>
             ))}
           </div>
@@ -249,3 +253,5 @@ const RpsPage: NextPage = () => {
 };
 
 export default RpsPage;
+
+    

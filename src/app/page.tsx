@@ -110,12 +110,15 @@ const RpsPage: NextPage = () => {
       }
       switch (event.key.toLowerCase()) {
         case 'r':
+        case '1':
           handleUserChoice('rock');
           break;
         case 'p':
+        case '2':
           handleUserChoice('paper');
           break;
         case 's':
+        case '3':
           handleUserChoice('scissors');
           break;
       }
@@ -225,7 +228,7 @@ const RpsPage: NextPage = () => {
         </CardFooter>
       </Card>
        <p className="mt-8 text-center text-sm text-muted-foreground">
-        Tip: Use keyboard shortcuts! Press <kbd className="px-2 py-1.5 text-xs font-semibold text-gray-700 bg-gray-100 border border-gray-300 rounded-md dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">R</kbd> for Rock, <kbd className="px-2 py-1.5 text-xs font-semibold text-gray-700 bg-gray-100 border border-gray-300 rounded-md dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">P</kbd> for Paper, or <kbd className="px-2 py-1.5 text-xs font-semibold text-gray-700 bg-gray-100 border border-gray-300 rounded-md dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">S</kbd> for Scissors.
+        Tip: Use keyboard shortcuts! Press <kbd className="px-2 py-1.5 text-xs font-semibold text-gray-700 bg-gray-100 border border-gray-300 rounded-md dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">R</kbd> or <kbd className="px-2 py-1.5 text-xs font-semibold text-gray-700 bg-gray-100 border border-gray-300 rounded-md dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">1</kbd> for Rock, <kbd className="px-2 py-1.5 text-xs font-semibold text-gray-700 bg-gray-100 border border-gray-300 rounded-md dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">P</kbd> or <kbd className="px-2 py-1.5 text-xs font-semibold text-gray-700 bg-gray-100 border border-gray-300 rounded-md dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">2</kbd> for Paper, or <kbd className="px-2 py-1.5 text-xs font-semibold text-gray-700 bg-gray-100 border border-gray-300 rounded-md dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">S</kbd> or <kbd className="px-2 py-1.5 text-xs font-semibold text-gray-700 bg-gray-100 border border-gray-300 rounded-md dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">3</kbd> for Scissors.
       </p>
     </div>
   );

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { RotateCcw, ThumbsUp, ThumbsDown, Scale } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import React from 'react';
 
 type Choice = 'rock' | 'paper' | 'scissors';
 type OutcomeMessage = 'You Win!' | 'Computer Wins!' | "It's a Tie!" | null;
@@ -154,32 +155,30 @@ const RpsPage: NextPage = () => {
     <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4 sm:p-6 md:p-8 text-foreground">
       <Card className="w-full max-w-2xl shadow-xl rounded-xl overflow-hidden">
         <CardHeader className="p-6 sm:p-8 border-b">
-          <div className="flex justify-between items-start">
-            <div className="flex-grow">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                <CardTitle className="text-3xl sm:text-4xl font-bold text-primary">RPS Duel</CardTitle>
-                <div className="flex items-center gap-3 sm:gap-4 mt-2 sm:mt-0">
-                  <div className="text-center">
-                    <p className="text-xs font-medium text-muted-foreground uppercase">You</p>
-                    <p className="text-xl font-bold text-foreground">{userScore}</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-xs font-medium text-muted-foreground uppercase">CPU</p>
-                    <p className="text-xl font-bold text-foreground">{computerScore}</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-xs font-medium text-muted-foreground uppercase">Ties</p>
-                    <p className="text-xl font-bold text-foreground">{ties}</p>
-                  </div>
-                </div>
-              </div>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+            <div className="flex-grow mb-4 sm:mb-0">
+              <CardTitle className="text-3xl sm:text-4xl font-bold text-primary">RPS Duel</CardTitle>
               <CardDescription className="text-md sm:text-lg text-muted-foreground mt-1">
                 Choose your weapon wisely!
               </CardDescription>
             </div>
-            <Button onClick={resetScores} variant="destructive" size="icon" aria-label="Reset All Scores" className="shadow-md hover:shadow-lg transition-shadow ml-4 flex-shrink-0">
-              <RotateCcw className="h-5 w-5" />
-            </Button>
+            <div className="flex items-center gap-3 sm:gap-4 flex-shrink-0">
+              <div className="text-center">
+                <p className="text-xs font-medium text-muted-foreground uppercase">You</p>
+                <p className="text-xl font-bold text-foreground">{userScore}</p>
+              </div>
+              <div className="text-center">
+                <p className="text-xs font-medium text-muted-foreground uppercase">CPU</p>
+                <p className="text-xl font-bold text-foreground">{computerScore}</p>
+              </div>
+              <div className="text-center">
+                <p className="text-xs font-medium text-muted-foreground uppercase">Ties</p>
+                <p className="text-xl font-bold text-foreground">{ties}</p>
+              </div>
+              <Button onClick={resetScores} variant="destructive" size="icon" aria-label="Reset All Scores" className="shadow-md hover:shadow-lg transition-shadow ml-2 sm:ml-4">
+                <RotateCcw className="h-5 w-5" />
+              </Button>
+            </div>
           </div>
         </CardHeader>
         <CardContent className="p-6 sm:p-8 space-y-8">
@@ -196,11 +195,14 @@ const RpsPage: NextPage = () => {
                   {getEmojiForChoice(choice)}
                 </span>
                 <span className="mt-2 font-medium text-foreground group-hover:text-accent-foreground transition-colors duration-200">{choice}</span>
-                <div className="mt-1.5 flex space-x-1">
-                  {hotkeyMap[choice].map((key) => (
-                    <kbd key={key} className="px-2 py-1 text-xs font-semibold text-muted-foreground group-hover:text-accent-foreground bg-muted group-hover:bg-primary/20 border border-input rounded-md shadow-sm transition-colors duration-200">
-                      {key}
-                    </kbd>
+                <div className="mt-1.5 flex items-center justify-center space-x-1">
+                  {hotkeyMap[choice].map((key, index) => (
+                    <React.Fragment key={key}>
+                      {index > 0 && <span className="mx-1 text-xs text-muted-foreground group-hover:text-accent-foreground transition-colors duration-200">or</span>}
+                      <kbd className="px-2 py-1 text-xs font-semibold text-muted-foreground group-hover:text-accent-foreground bg-muted group-hover:bg-primary/20 border border-input rounded-md shadow-sm transition-colors duration-200">
+                        {key}
+                      </kbd>
+                    </React.Fragment>
                   ))}
                 </div>
               </Button>
@@ -208,43 +210,45 @@ const RpsPage: NextPage = () => {
           </div>
 
           <div className="pt-6 border-t">
-            {userChoice || computerChoice || outcome ? (
-              <div className="space-y-6 text-center">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 items-start">
-                  <div className="flex flex-col items-center space-y-2 p-4 border rounded-lg shadow-sm bg-secondary/50">
-                    <h3 className="text-lg sm:text-xl font-semibold text-secondary-foreground">Your Choice</h3>
-                    <span className="text-5xl md:text-6xl text-secondary-foreground" role="img" aria-label={userChoice || undefined}>
-                      {getEmojiForChoice(userChoice)}
-                    </span>
-                    <p className="text-md sm:text-lg capitalize text-secondary-foreground font-medium">{userChoice || 'Waiting...'}</p>
+            <div className="min-h-72 flex flex-col justify-center">
+              {userChoice || computerChoice || outcome ? (
+                <div className="space-y-6 text-center">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 items-start">
+                    <div className="flex flex-col items-center space-y-2 p-4 border rounded-lg shadow-sm bg-secondary/50">
+                      <h3 className="text-lg sm:text-xl font-semibold text-secondary-foreground">Your Choice</h3>
+                      <span className="text-5xl md:text-6xl text-secondary-foreground" role="img" aria-label={userChoice || undefined}>
+                        {getEmojiForChoice(userChoice)}
+                      </span>
+                      <p className="text-md sm:text-lg capitalize text-secondary-foreground font-medium">{userChoice || 'Waiting...'}</p>
+                    </div>
+                    <div className="flex flex-col items-center space-y-2 p-4 border rounded-lg shadow-sm bg-secondary/50">
+                      <h3 className="text-lg sm:text-xl font-semibold text-secondary-foreground">Computer's Choice</h3>
+                      <span className="text-5xl md:text-6xl text-secondary-foreground" role="img" aria-label={computerChoice || undefined}>
+                        {getEmojiForChoice(computerChoice)}
+                      </span>
+                      <p className="text-md sm:text-lg capitalize text-secondary-foreground font-medium">{computerChoice || 'Waiting...'}</p>
+                    </div>
                   </div>
-                  <div className="flex flex-col items-center space-y-2 p-4 border rounded-lg shadow-sm bg-secondary/50">
-                    <h3 className="text-lg sm:text-xl font-semibold text-secondary-foreground">Computer's Choice</h3>
-                    <span className="text-5xl md:text-6xl text-secondary-foreground" role="img" aria-label={computerChoice || undefined}>
-                      {getEmojiForChoice(computerChoice)}
-                    </span>
-                    <p className="text-md sm:text-lg capitalize text-secondary-foreground font-medium">{computerChoice || 'Waiting...'}</p>
-                  </div>
+                  {outcome && (
+                    <div className={cn(
+                      "mt-4 p-4 sm:p-5 rounded-lg shadow-md text-center flex items-center justify-center",
+                      outcome === 'You Win!' && "bg-accent text-accent-foreground",
+                      outcome === 'Computer Wins!' && "bg-destructive text-destructive-foreground",
+                      outcome === "It's a Tie!" && "bg-muted text-muted-foreground"
+                    )}>
+                      {getOutcomeIcon(outcome)}
+                      <h2 className="text-xl sm:text-2xl md:text-3xl font-bold">{outcome}</h2>
+                    </div>
+                  )}
                 </div>
-                {outcome && (
-                  <div className={cn(
-                    "mt-4 p-4 sm:p-5 rounded-lg shadow-md text-center flex items-center justify-center",
-                    outcome === 'You Win!' && "bg-accent text-accent-foreground",
-                    outcome === 'Computer Wins!' && "bg-destructive text-destructive-foreground",
-                    outcome === "It's a Tie!" && "bg-muted text-muted-foreground"
-                  )}>
-                    {getOutcomeIcon(outcome)}
-                    <h2 className="text-xl sm:text-2xl md:text-3xl font-bold">{outcome}</h2>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="text-center py-6">
-                <Scale className="w-10 h-10 mx-auto text-muted-foreground mb-3" />
-                <p className="text-lg font-medium text-foreground">Let the duel begin!</p>
-                <p className="text-sm text-muted-foreground">Choose your weapon to see the outcome.</p>
-              </div>
-            )}
+              ) : (
+                <div className="text-center">
+                  <Scale className="w-10 h-10 mx-auto text-muted-foreground mb-3" />
+                  <p className="text-lg font-medium text-foreground">Let the duel begin!</p>
+                  <p className="text-sm text-muted-foreground">Choose your weapon to see the outcome.</p>
+                </div>
+              )}
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -253,5 +257,3 @@ const RpsPage: NextPage = () => {
 };
 
 export default RpsPage;
-
-    

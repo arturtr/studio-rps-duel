@@ -4,7 +4,7 @@
 import type { NextPage } from 'next';
 import { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardFooter, CardTitle } from '@/components/ui/card'; // Removed CardHeader
 import { RotateCcw, ThumbsUp, ThumbsDown, Scale } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -148,11 +148,8 @@ const RpsPage: NextPage = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4 sm:p-6 md:p-8 text-foreground">
       <Card className="w-full max-w-2xl shadow-xl rounded-xl overflow-hidden">
-        <CardHeader className="text-center bg-card-foreground/5 p-6">
-          <CardTitle className="text-3xl sm:text-4xl font-bold text-primary">RPS Duel</CardTitle>
-          <CardDescription className="text-md sm:text-lg text-muted-foreground mt-1">Choose your weapon wisely!</CardDescription>
-        </CardHeader>
-        <CardContent className="p-6 sm:p-8 space-y-8">
+        {/* CardHeader removed */}
+        <CardContent className="p-6 sm:p-8 space-y-8 pt-8"> {/* Added pt-8 to compensate for removed CardHeader padding */}
           <div className="grid grid-cols-3 gap-3 sm:gap-4">
             {choices.map((choice) => (
               <Button
@@ -202,7 +199,12 @@ const RpsPage: NextPage = () => {
             </div>
           )}
         </CardContent>
-        <CardFooter className="flex flex-col space-y-4 p-6 sm:p-8 bg-card-foreground/5 border-t">
+        <CardFooter className="flex flex-col space-y-6 p-6 sm:p-8 bg-card-foreground/5 border-t">
+          <div className="text-center"> {/* Container for title and description */}
+            <CardTitle className="text-3xl sm:text-4xl font-bold text-primary">RPS Duel</CardTitle>
+            <CardDescription className="text-md sm:text-lg text-muted-foreground mt-1">Choose your weapon wisely!</CardDescription>
+          </div>
+          
           <div className="w-full text-center">
              <h3 className="text-xl sm:text-2xl font-semibold mb-3 text-primary">Scoreboard</h3>
              <div className="grid grid-cols-3 gap-2 sm:gap-3 text-sm sm:text-md">
